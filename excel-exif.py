@@ -93,6 +93,7 @@ def main():
         for f in filenames:
             exif = Image.open(f).getexif()
 
+            # TO SEE NAMES OF EXIF tags to populate list - uncomment this line
             #printExif(exif)
 
             # Get the data from the tags in our list
