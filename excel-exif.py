@@ -59,9 +59,9 @@ def returnExifTags(exif,tags):
 def main():
 
     ################ Variables ################
-    dataDir = '/home/apr/Nextcloud/Pictures/Photos/2020'  # Directory to process
+    dataDir = '/run/media/apr/Data/apr/Photos/Family/Scans/'  # Directory to process
     filename_regex = '\.jpg'                              # Regex of file we want to process
-    exif_tags = ['ImageWidth','Make','Model','GPSInfo']   # List of EXIF tags we want to save to excel file
+    exif_tags = ['DateTime','GPSInfo']   # List of EXIF tags we want to save to excel file
     excel_filename='test.xlsx'
     ############################################
     
@@ -91,28 +91,35 @@ def main():
         files_data = []
 
         for f in filenames:
+            print("\n")
+            print(f)
             exif = Image.open(f).getexif()
-
+            xmp = Image.open(f).getxmp()
             # TO SEE NAMES OF EXIF tags to populate list - uncomment this line
             #printExif(exif)
+            # for key, value in xmp.items() :
+            #     print (key, value)
+            print(xmp['xmpmeta']['RDF']['Description']['subject']['Bag']['li'])
+            #print(xmp)
 
             # Get the data from the tags in our list
             tags, data = returnExifTags(exif,exif_tags)
-            files_tags.append(tags)
-            files_data.append(data)
+            print(tags, data)
+            # files_tags.append(tags)
+            # files_data.append(data)
 
-        # Now we fill an excel spreadsheet with the data
-        df = pd.DataFrame(filenames, columns=['Filepath'])
+        # # Now we fill an excel spreadsheet with the data
+        # df = pd.DataFrame(filenames, columns=['Filepath'])
 
-        # Convert to a hyperlink
-        df['Filepath'] = '=HYPERLINK("' + df['Filepath'] + '", "' + df['Filepath'] + '")'
+        # # Convert to a hyperlink
+        # df['Filepath'] = '=HYPERLINK("' + df['Filepath'] + '", "' + df['Filepath'] + '")'
         
-        for i in range(len(files_data[0])):
-            print([row[i] for row in files_data])
-            df.insert((i+1),files_tags[0][i],[row[i] for row in files_data])
+        # for i in range(len(files_data[0])):
+        #     print([row[i] for row in files_data])
+        #     df.insert((i+1),files_tags[0][i],[row[i] for row in files_data])
 
-        # Write to file
-        df.to_excel(excel_filename,index=False)
+        # # Write to file
+        # df.to_excel(excel_filename,index=False)
     
 if __name__ == '__main__':
     sys.exit(main())
